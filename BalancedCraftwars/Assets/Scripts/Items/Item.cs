@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
+    public string itemName = "DefaultItem";
+    public string itemDescription = "DefaultDescription";
+
     [Header("Player Health Modifiers")]
     public float healthIncrease = 0;
     public float healthMultiplier = 1;
@@ -11,10 +14,12 @@ public class Item : MonoBehaviour
     [Header("Player Defense Modifiers")]
     public float defenseIncrease = 0;
     public float defenseMultiplier = 1;
-
-    [Header("Player DR Modifiers")]
     public float damageReduction = 0;
-    public float damageIncrease = 1;
+    public float damageIntakeMultiplier = 1;
+
+    [Header("Player Damage Modifiers")]
+    public float damageIncrease = 0;
+    public float damageMultiplier = 1;
 
     [Header("Player Speed Modifiers")]
     public float speedIncrease = 0;

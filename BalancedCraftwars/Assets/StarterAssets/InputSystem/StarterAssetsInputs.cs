@@ -1,6 +1,8 @@
 using UnityEngine;
+using Cinemachine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 #endif
 
 namespace StarterAssets
@@ -18,11 +20,12 @@ namespace StarterAssets
 		public bool analogMovement;
 
 		[Header("Mouse Cursor Settings")]
-		public bool cursorLocked = true;
+		public bool cursorLocked = false;
 		public bool cursorInputForLook = true;
+		public GameObject cameraUnlockPos;
 
 #if ENABLE_INPUT_SYSTEM
-		public void OnMove(InputValue value)
+        public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
 		}
@@ -49,6 +52,20 @@ namespace StarterAssets
 		{
 			ZoomInput(value.Get<float>());
 		}
+
+		public void OnUnlock()
+		{
+			if(cursorLocked)
+			{
+				cursorLocked = false;
+            }
+			else
+			{
+				cursorLocked = true;
+            }
+
+            Cursor.lockState = cursorLocked ? CursorLockMode.Locked : CursorLockMode.None;
+        }
 #endif
 
 
