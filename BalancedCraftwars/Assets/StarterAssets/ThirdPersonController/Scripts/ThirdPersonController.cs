@@ -230,7 +230,7 @@ namespace StarterAssets
             this.zoom = Mathf.Clamp(this.zoom, this.zoomMinimumDistance, this.zoomMaximumDistance);
             this.cameraDistance = Mathf.SmoothDamp(this.cameraDistance, this.zoom, ref this.zoomVelocity, Time.unscaledTime * this.zoomSpeed);
 
-            this.cinemachineVirtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>().CameraDistance = this.cameraDistance;
+            GetComponent<Test>().followDistance = this.cameraDistance;
         }
 
         private void Move()
