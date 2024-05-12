@@ -2,10 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public enum SlotTag { None, Helmet, Armor, Shield, Neck, Back, Accessory }
+
+[CreateAssetMenu(menuName = "Scriptable Objects/Item")]
+public class Item : ScriptableObject
 {
     public string itemName = "DefaultItem";
     public string itemDescription = "DefaultDescription";
+    public bool stackable = true;
+    public SlotTag itemTag;
 
     [Header("Player Health Modifiers")]
     public float healthIncrease = 0;
@@ -28,5 +33,8 @@ public class Item : MonoBehaviour
     [Header("Player Currency Modifiers")]
     public float currencyToAdd = 0;
     public float currencyMultiplier = 1;
+
+    [Header("Equip Settings")]
+    public GameObject equipmentPrefab;
 
 }

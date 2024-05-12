@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using TMPro;
 using UnityEngine;
 
 public class Test : MonoBehaviour
@@ -14,11 +15,11 @@ public class Test : MonoBehaviour
     public float mouseSensitivityY = 2.0f;
     public float heightOffset = 0.5f;
 
-    private Vector3 camPos;
+    private Vector3 desiredPosition;
 
     void Start()
     {
-        camPos = theCamera.transform.position;
+        desiredPosition = theCamera.transform.position;
         theCamera.transform.forward = gameObject.transform.forward;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -26,7 +27,7 @@ public class Test : MonoBehaviour
 
     void Update()
     {
-        if(!Input.GetMouseButton(1))
+        if (!Input.GetMouseButton(1))
         {
             theCamera.transform.position = gameObject.transform.position + new Vector3(0, heightOffset, 0);
             theCamera.transform.position -= theCamera.transform.forward * followDistance;
@@ -40,7 +41,8 @@ public class Test : MonoBehaviour
                 Mathf.Clamp(theCamera.transform.eulerAngles.x + cameraMovement.y * mouseSensitivityY, LOW_LIMIT, HIGH_LIMIT),
                 theCamera.transform.eulerAngles.y + cameraMovement.x * mouseSensitivityX, 0);
             theCamera.transform.position -= theCamera.transform.forward * followDistance;
-            camPos = theCamera.transform.position;
+            desiredPosition = theCamera.transform.position;
         }
     }
+
 }
