@@ -8,6 +8,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 {
     public InventoryItem myItem { get; set; }
     public SlotTag myTag;
+    public bool hovered;
+    public Item heldItem;
+    public int quantity;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -32,7 +35,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
         if(myTag != SlotTag.None)
         {
-            Inventory.Singleton.EquipEquipment(myTag, myItem);
+
         }
     }
 

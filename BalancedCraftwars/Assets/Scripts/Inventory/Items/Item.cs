@@ -5,11 +5,15 @@ using UnityEngine;
 public enum SlotTag { None, Helmet, Armor, Shield, Neck, Back, Accessory }
 
 [CreateAssetMenu(menuName = "Scriptable Objects/Item")]
+[System.Serializable]
 public class Item : ScriptableObject
 {
+    public string itemID = "testID";
     public string itemName = "DefaultItem";
     public string itemDescription = "DefaultDescription";
     public bool stackable = true;
+    public int itemNumber = 0;
+    public int quantity = 0;
     public SlotTag itemTag;
 
     [Header("Player Health Modifiers")]

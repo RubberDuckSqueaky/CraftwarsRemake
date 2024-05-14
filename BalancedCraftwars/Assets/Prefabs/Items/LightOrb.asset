@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3565419451ef5e64fb32420b1f286bf4, type: 3}
   m_Name: LightOrb
   m_EditorClassIdentifier: 
+  itemID: lightOrb
   itemName: Light Orb
   itemDescription: yeah
+  stackable: 1
+  itemNumber: 1
+  quantity: 0
   itemTag: 0
   healthIncrease: 0
   healthMultiplier: 1

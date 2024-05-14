@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class Inventory : MonoBehaviour
 {
     public static Inventory Singleton;
     public static InventoryItem carriedItem;
+    private SaveAllItems items;
 
     [SerializeField] InventorySlot[] inventorySlots;
     [SerializeField] InventorySlot[] hotbarSlots;
@@ -17,91 +19,25 @@ public class Inventory : MonoBehaviour
     [SerializeField] Transform draggablesTransform;
     [SerializeField] InventoryItem itemPrefab;
 
-    [Header("Item List")]
-    [SerializeField] Item[] items;
-
-    [Header("Debug")]
-    [SerializeField] Button giveItemBtn;
-
-    void Awake()
+    private void Start()
     {
-        Singleton = this;
-        giveItemBtn.onClick.AddListener(delegate { SpawnInventoryItem(); });
+        items = GetComponent<SaveAllItems>();
     }
 
-    void Update()
+    private void Update()
     {
-        if (carriedItem == null) return;
-
-        carriedItem.transform.position = Input.mousePosition;
-    }
-
-    public void SetCarriedItem(InventoryItem item)
-    {
-        if (carriedItem != null)
+        if (Input.GetKeyDown(KeyCode.Z))
         {
-            if (item.activeSlot.myTag != SlotTag.None && item.activeSlot.myTag != carriedItem.myItem.itemTag) return;
-            item.activeSlot.SetItem(carriedItem);
-        }
-
-        if (item.activeSlot.myTag != SlotTag.None)
-        { EquipEquipment(item.activeSlot.myTag, null); }
-
-        carriedItem = item;
-        carriedItem.canvasGroup.blocksRaycasts = false;
-        item.transform.SetParent(draggablesTransform);
-    }
-
-    public void EquipEquipment(SlotTag tag, InventoryItem item = null)
-    {
-        switch (tag)
-        {
-            case SlotTag.Helmet:
-                if (item == null)
-                {
-                    // Destroy item.equipmentPrefab on the Player Object;
-                    Debug.Log("Unequipped helmet on " + tag);
-                }
-                else
-                {
-                    // Instantiate item.equipmentPrefab on the Player Object;
-                    Debug.Log("Equipped " + item.myItem.name + " on " + tag);
-                }
-                break;
-            case SlotTag.Armor:
-                break;
-            case SlotTag.Accessory:
-                break;
-            case SlotTag.Back:
-                break;
+            UpdateInventory();
         }
     }
 
-    public void SpawnInventoryItem(Item item = null)
-    {
-        Item _item = item;
-        if (_item == null)
-        { _item = PickRandomItem(); }
-
-        for (int i = 0; i < inventorySlots.Length; i++)
-        {
-            // Check if the slot is empty
-            if (inventorySlots[i].myItem == null)
-            {
-                Instantiate(itemPrefab, inventorySlots[i].transform).Initialize(_item, inventorySlots[i]);
-                break;
-            }
-        }
-    }
-
-    public void AddItem()
+    private void UpdateInventory()
     {
 
     }
 
-    Item PickRandomItem()
-    {
-        int random = Random.Range(0, items.Length);
-        return items[random];
-    }
+
+
+
 }

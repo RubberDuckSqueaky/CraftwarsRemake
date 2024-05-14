@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3565419451ef5e64fb32420b1f286bf4, type: 3}
   m_Name: Orb
   m_EditorClassIdentifier: 
+  itemID: darkOrb
   itemName: Dark Orb
   itemDescription: yeah
+  stackable: 1
+  itemNumber: 2
+  quantity: 0
   itemTag: 0
   healthIncrease: 0
   healthMultiplier: 1
