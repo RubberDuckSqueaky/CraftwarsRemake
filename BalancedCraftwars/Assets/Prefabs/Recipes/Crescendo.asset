@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eb681fb61de3da4caca4a8421875ea4, type: 3}
+  m_Name: Crescendo
+  m_EditorClassIdentifier: 
+  outputItem: {fileID: 11400000, guid: 0035702a4be9e5d4e817c590c1befc9e, type: 2}
+  ingredients:
+  - item: {fileID: 11400000, guid: 4e98751459c1f584fb74a0edeabb7b18, type: 2}
+    quantity: 1
+    consumeItem: 1
+  - item: {fileID: 11400000, guid: 8d5e96cdbea994644af89e6d20309829, type: 2}
+    quantity: 3
+    consumeItem: 1

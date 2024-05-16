@@ -9,6 +9,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] public Canvas craftingCanvas;
     [SerializeField] public Canvas inventoryCanvas;
     [SerializeField] public Canvas settingsCanvas;
+    private CraftingMenu craftMenu;
+    private Inventory inventoryMenu;
+
+    public void Start()
+    {
+        craftMenu = FindFirstObjectByType<CraftingMenu>();
+        inventoryMenu = FindFirstObjectByType<Inventory>();
+    }
 
     public void ToggleCrafting()
     {
@@ -21,6 +29,7 @@ public class UIManager : MonoBehaviour
             craftingCanvas.enabled = true;
             inventoryCanvas.enabled = false;
             settingsCanvas.enabled = false;
+            craftMenu.UpdateCraftingInventory();
         }
     }
 
@@ -35,6 +44,7 @@ public class UIManager : MonoBehaviour
             inventoryCanvas.enabled = true;
             craftingCanvas.enabled = false;
             settingsCanvas.enabled = false;
+            inventoryMenu.UpdateInventory();
         }
     }
 

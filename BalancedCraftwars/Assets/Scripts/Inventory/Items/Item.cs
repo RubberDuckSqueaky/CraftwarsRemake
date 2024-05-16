@@ -2,7 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SlotTag { None, Helmet, Armor, Shield, Neck, Back, Accessory }
+// None - Takes up no special slot excluding a hotbar slot when equipped. Used for in-world crafting.
+// Special - Also takes up no slots besides a hotbar slot when equipped. Mostly for items that fall under "bragging rights" or special codes.
+// Weapon - Takes up one weapon slot when equipped, max of 3 weapons can be equipped at one time. For things/items created to do damage.
+// Equipment - Takes up one equipment slot when equipped, max of 2 equipment can be equipped at one time. For utility or generally useful items.
+// Helmet, Armor - Takes up one helmet/armor slot when equipped, a max of one helmet and armor can be equipped at one time. For things u can wear to protect.
+// Neck - For amulets and unique neck accessories.
+
+public enum SlotTag { None, Special, Weapon, Equipment, Helmet, Armor, Neck, Shield, Back, Accessory }
 
 [CreateAssetMenu(menuName = "Scriptable Objects/Item")]
 [System.Serializable]

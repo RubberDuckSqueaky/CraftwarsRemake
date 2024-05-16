@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: skibidi
   m_EditorClassIdentifier: 
   itemID: skibidi
-  itemName: skibidi
+  itemName: thirdItem
   itemDescription: yeah
   stackable: 1
   itemNumber: 3

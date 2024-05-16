@@ -1,26 +1,21 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
+using static UnityEditor.Progress;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using static SaveAllItems;
 
-public class Inventory : MonoBehaviour
+public class CraftingMenu : MonoBehaviour
 {
     public static Inventory Singleton;
     public static InventoryItem carriedItem;
+    private CraftingManager crafting;
     private SaveAllItems items;
 
-    private List<ItemInfo> filteredInventory = new List<ItemInfo>();
+    private List<ItemInfo> filteredCrafting = new List<ItemInfo>();
 
-    [SerializeField] InventorySlot[] inventorySlots;
-    [SerializeField] InventorySlot[] hotbarSlots;
-
-    // 0=Head, 1=Chest, 2=Legs, 3=Feet
-    [SerializeField] InventorySlot[] equipmentSlots;
+    [SerializeField] InventorySlot[] craftingSlots;
 
     [SerializeField] Transform draggablesTransform;
     [SerializeField] InventoryItem itemPrefab;
@@ -32,31 +27,30 @@ public class Inventory : MonoBehaviour
     private void Start()
     {
         EnableInput();
+        crafting = FindFirstObjectByType<CraftingManager>();
         items = FindFirstObjectByType<SaveAllItems>();
         pageNumber = 1;
         slotCount = 0;
         filter = false;
     }
 
-    // keep an eye on this code below... :3
-    
-    public void UpdateInventory()
+    public void UpdateCraftingInventory()
     {
         int slotNumber = 0;
 
-        foreach (var slot in inventorySlots)
+        foreach (var slot in craftingSlots)
         {
-            if (items.playerInventory != null)
+            if (crafting.craftableItems != null)
             {
-                if (slotNumber >= items.playerInventory.Count)
+                if (slotNumber >= crafting.craftableItems.Count)
                 {
                     slot.GetComponentInChildren<TextMeshProUGUI>().text = ""; // Clear extra slots
                 }
                 else
                 {
-                    string realName = items.GetName(items.playerInventory[slotNumber].itemID);
-                    int quantity = items.playerInventory[slotNumber].quantity;
-                    slot.GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName + " x" + quantity : "";
+                    string realName = items.GetName(crafting.craftableItems[slotNumber].outputItem.itemID);
+                    slot.GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName : "";
+                    slot.recipe = crafting.craftableItems[slotNumber];
                     slotNumber++;
                 }
             }
@@ -65,15 +59,15 @@ public class Inventory : MonoBehaviour
 
     public void NextPage()
     {
-        if(filter)
+        if (filter)
         {
-            if (filteredInventory != null && filteredInventory.Count > inventorySlots.Length)
+            if (filteredCrafting != null && filteredCrafting.Count > craftingSlots.Length)
             {
-                slotCount += inventorySlots.Length;
+                slotCount += craftingSlots.Length;
 
-                if (slotCount >= filteredInventory.Count)
+                if (slotCount >= filteredCrafting.Count)
                 {
-                    slotCount -= inventorySlots.Length; // Prevent going out of bounds
+                    slotCount -= craftingSlots.Length; // Prevent going out of bounds
                     Debug.Log("Can't do this!");
                     return;
                 }
@@ -82,13 +76,13 @@ public class Inventory : MonoBehaviour
                 UpdateFilteredInventory();
             }
         }
-        else if (items.playerInventory != null && items.playerInventory.Count > inventorySlots.Length)
+        else if (crafting.craftableItems != null && crafting.craftableItems.Count > craftingSlots.Length)
         {
-            slotCount += inventorySlots.Length;
+            slotCount += craftingSlots.Length;
 
-            if (slotCount >= items.playerInventory.Count)
+            if (slotCount >= crafting.craftableItems.Count)
             {
-                slotCount -= inventorySlots.Length; // Prevent going out of bounds
+                slotCount -= craftingSlots.Length; // Prevent going out of bounds
                 Debug.Log("Can't do this!");
                 return;
             }
@@ -101,9 +95,9 @@ public class Inventory : MonoBehaviour
     {
         if (filter)
         {
-            if (filteredInventory != null && filteredInventory.Count > inventorySlots.Length)
+            if (filteredCrafting != null && filteredCrafting.Count > craftingSlots.Length)
             {
-                slotCount -= inventorySlots.Length;
+                slotCount -= craftingSlots.Length;
 
                 if (slotCount < 0)
                 {
@@ -116,9 +110,9 @@ public class Inventory : MonoBehaviour
                 UpdateFilteredInventory();
             }
         }
-        else if (items.playerInventory != null && slotCount > 0)
+        else if (crafting.craftableItems != null && slotCount > 0)
         {
-            slotCount -= inventorySlots.Length;
+            slotCount -= craftingSlots.Length;
 
             if (slotCount < 0)
             {
@@ -137,19 +131,18 @@ public class Inventory : MonoBehaviour
     public void UpdateInventoryPage()
     {
         // Clear all slots first
-        foreach (var slot in inventorySlots)
+        foreach (var slot in craftingSlots)
         {
             slot.GetComponentInChildren<TextMeshProUGUI>().text = "";
         }
 
         int slotNumber = 0;
-        for (int i = slotCount; i < slotCount + inventorySlots.Length; i++)
+        for (int i = slotCount; i < slotCount + craftingSlots.Length; i++)
         {
-            if (i < items.playerInventory.Count)
+            if (i < crafting.craftableItems.Count)
             {
-                string realName = items.GetName(items.playerInventory[i].itemID);
-                int quantity = items.playerInventory[slotNumber].quantity;
-                inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName + " x" + quantity : "";
+                string realName = items.GetName(crafting.craftableItems[i].outputItem.itemID);
+                craftingSlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName : "";
                 slotNumber++;
             }
         }
@@ -157,12 +150,12 @@ public class Inventory : MonoBehaviour
 
     public void FilterInventory(string searchText)
     {
-        filteredInventory.Clear();
+        filteredCrafting.Clear();
 
-        if(string.IsNullOrEmpty(searchText))
+        if (string.IsNullOrEmpty(searchText))
         {
             filter = false;
-            filteredInventory.AddRange(items.playerInventory);
+            filteredCrafting.AddRange(items.playerInventory);
         }
         else
         {
@@ -171,7 +164,7 @@ public class Inventory : MonoBehaviour
             {
                 if (items.GetName(item.itemID).ToLower().Contains(searchText.ToLower()))
                 {
-                    filteredInventory.Add(item);
+                    filteredCrafting.Add(item);
                 }
             }
         }
@@ -181,17 +174,16 @@ public class Inventory : MonoBehaviour
 
     private void UpdateFilteredInventory()
     {
-        foreach (var slot in inventorySlots)
+        foreach (var slot in craftingSlots)
         {
             slot.GetComponentInChildren<TextMeshProUGUI>().text = "";
         }
 
         int slotNumber = 0;
-        for (int i = 0; i < filteredInventory.Count && i < inventorySlots.Length; i++)
+        for (int i = 0; i < filteredCrafting.Count && i < craftingSlots.Length; i++)
         {
-            string realName = items.GetName(filteredInventory[i].itemID);
-            int quantity = filteredInventory[i].quantity;
-            inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName + " x" + quantity : "";
+            string realName = items.GetName(filteredCrafting[i].itemID);
+            craftingSlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName: "";
             slotNumber++;
         }
     }

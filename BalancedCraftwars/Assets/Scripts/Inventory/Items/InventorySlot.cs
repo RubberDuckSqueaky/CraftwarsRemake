@@ -12,13 +12,17 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     public Item heldItem;
     public int quantity;
 
+    public Recipe recipe;
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if(eventData.button == PointerEventData.InputButton.Left)
         {
-            if (Inventory.carriedItem == null) return;
-            if (myTag != SlotTag.None && Inventory.carriedItem.myItem.itemTag != myTag) return;
-            SetItem(Inventory.carriedItem);
+            if(recipe != null)
+            {
+                FindFirstObjectByType<CraftingManager>().selectedRecipe = recipe;
+                Debug.Log("Recipe Selected: " + FindFirstObjectByType<CraftingManager>().selectedRecipe);
+            }
         }
     }
 
@@ -38,5 +42,6 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
         }
     }
+
 
 }
