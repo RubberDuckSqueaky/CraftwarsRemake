@@ -9,7 +9,8 @@ using UnityEngine;
 // Helmet, Armor - Takes up one helmet/armor slot when equipped, a max of one helmet and armor can be equipped at one time. For things u can wear to protect.
 // Neck - For amulets and unique neck accessories.
 
-public enum SlotTag { None, Special, Weapon, Equipment, Helmet, Armor, Neck, Shield, Back, Accessory }
+public enum SlotTag { None, Item, Special, Weapon, Equipment, Helmet, Armor, Neck, Shield, Back, Accessory }
+public enum InventoryTag { None, Rare, Debug }
 
 [CreateAssetMenu(menuName = "Scriptable Objects/Item")]
 [System.Serializable]
@@ -22,6 +23,7 @@ public class Item : ScriptableObject
     public int itemNumber = 0;
     public int quantity = 0;
     public SlotTag itemTag;
+    public InventoryTag inventoryTag;
 
     [Header("Player Health Modifiers")]
     public float healthIncrease = 0;
@@ -46,6 +48,6 @@ public class Item : ScriptableObject
     public float currencyMultiplier = 1;
 
     [Header("Equip Settings")]
-    public GameObject equipmentPrefab;
+    public GameObject itemToEquip;
 
 }

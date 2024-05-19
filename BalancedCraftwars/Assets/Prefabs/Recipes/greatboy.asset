@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eb681fb61de3da4caca4a8421875ea4, type: 3}
+  m_Name: greatboy
+  m_EditorClassIdentifier: 
+  outputItem: {fileID: 11400000, guid: 1ffaee7b2150bf0479df4c27de7be8b6, type: 2}
+  ingredients:
+  - item: {fileID: 11400000, guid: 3651f779275ef0a49a9a97d26a96ca2d, type: 2}
+    quantity: 1
+    consumeItem: 0
+  - item: {fileID: 11400000, guid: 41641b24e73fa4243a6811b4aeb1b9b3, type: 2}
+    quantity: 2951238
+    consumeItem: 1

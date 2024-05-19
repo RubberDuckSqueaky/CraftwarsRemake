@@ -5,9 +5,17 @@ using UnityEngine;
 using static UnityEditor.Progress;
 using UnityEngine.InputSystem;
 using static SaveAllItems;
+using Unity.VisualScripting;
+using UnityEngine.EventSystems;
 
 public class CraftingMenu : MonoBehaviour
 {
+    [SerializeField] private GameObject craftingPreview;
+    [SerializeField] public TextMeshProUGUI itemName;
+    [SerializeField] public TextMeshProUGUI itemDescription;
+    [SerializeField] public TextMeshProUGUI itemRequirements;
+    [SerializeField] public TextMeshProUGUI craftingText;
+
     public static Inventory Singleton;
     public static InventoryItem carriedItem;
     private CraftingManager crafting;
@@ -26,12 +34,13 @@ public class CraftingMenu : MonoBehaviour
 
     private void Start()
     {
-        EnableInput();
+        InputSystem.EnableDevice(Keyboard.current);
         crafting = FindFirstObjectByType<CraftingManager>();
         items = FindFirstObjectByType<SaveAllItems>();
         pageNumber = 1;
         slotCount = 0;
         filter = false;
+        UpdateCraftingInventory();
     }
 
     public void UpdateCraftingInventory()
@@ -48,9 +57,10 @@ public class CraftingMenu : MonoBehaviour
                 }
                 else
                 {
-                    string realName = items.GetName(crafting.craftableItems[slotNumber].outputItem.itemID);
+                    string realName = items.GetName(crafting.craftableItems[slotNumber].outputItem.itemID, 1);
                     slot.GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName : "";
                     slot.recipe = crafting.craftableItems[slotNumber];
+                    slot.GetComponent<InventorySlot>().itemID = crafting.craftableItems[slotNumber].outputItem.itemID;
                     slotNumber++;
                 }
             }
@@ -141,8 +151,9 @@ public class CraftingMenu : MonoBehaviour
         {
             if (i < crafting.craftableItems.Count)
             {
-                string realName = items.GetName(crafting.craftableItems[i].outputItem.itemID);
-                craftingSlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName : "";
+                string realName = items.GetName(crafting.craftableItems[i].outputItem.itemID, 0);
+                int quantity = items.GetQuantity(crafting.craftableItems[i].outputItem.itemID, 3);
+                craftingSlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName + " x" + quantity : "";
                 slotNumber++;
             }
         }
@@ -162,7 +173,7 @@ public class CraftingMenu : MonoBehaviour
             filter = true;
             foreach (var item in items.playerInventory)
             {
-                if (items.GetName(item.itemID).ToLower().Contains(searchText.ToLower()))
+                if (items.GetName(item.itemID, 0).ToLower().Contains(searchText.ToLower()))
                 {
                     filteredCrafting.Add(item);
                 }
@@ -182,19 +193,30 @@ public class CraftingMenu : MonoBehaviour
         int slotNumber = 0;
         for (int i = 0; i < filteredCrafting.Count && i < craftingSlots.Length; i++)
         {
-            string realName = items.GetName(filteredCrafting[i].itemID);
+            string realName = items.GetName(filteredCrafting[i].itemID, 0);
             craftingSlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName: "";
             slotNumber++;
         }
     }
 
-    public void DisableInput()
+    public void PreviewCraft()
     {
-        InputSystem.DisableDevice(Keyboard.current);
+        if (craftingPreview.activeSelf)
+        {
+            craftingPreview.SetActive(false);
+        }
+        else
+        {
+            craftingPreview.SetActive(true);
+        }
     }
     public void EnableInput()
     {
         InputSystem.EnableDevice(Keyboard.current);
+    }
+    public void DisableInput()
+    {
+        InputSystem.DisableDevice(Keyboard.current);
     }
 
 }

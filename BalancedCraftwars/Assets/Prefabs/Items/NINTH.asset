@@ -18,7 +18,8 @@ MonoBehaviour:
   stackable: 1
   itemNumber: 9
   quantity: 0
-  itemTag: 0
+  itemTag: 1
+  inventoryTag: 0
   healthIncrease: 0
   healthMultiplier: 1
   defenseIncrease: 0
@@ -31,4 +32,4 @@ MonoBehaviour:
   speedMultiplier: 1
   currencyToAdd: 0
   currencyMultiplier: 1
-  equipmentPrefab: {fileID: 0}
+  itemToEquip: {fileID: 0}

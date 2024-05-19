@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class CraftingManager : MonoBehaviour
 {
-    [SerializeField] private GameObject craftingPreview;
     public CraftingMenu craftingInventory;
     public SaveAllItems items;
     public List<Recipe> craftableItems;
@@ -15,7 +15,6 @@ public class CraftingManager : MonoBehaviour
     public void Start()
     {
         selectedRecipe = null;
-        craftingPreview.SetActive(false);
     }
 
     private void Update()
@@ -28,31 +27,40 @@ public class CraftingManager : MonoBehaviour
 
     public void CraftItem()
     {
-        if(selectedRecipe != null)
+        if (selectedRecipe != null)
         {
-            int index = 0;
-            foreach(var ingredient in selectedRecipe.ingredients)
-            {
-                if (selectedRecipe.ingredients[index].consumeItem)
-                {
-                    int itemID = selectedRecipe.ingredients[index].item.itemNumber;
-                    int numbertoRemove = selectedRecipe.ingredients[index].quantity;
+            bool canCraft = true;
 
-                    items.RemoveItem(itemID, numbertoRemove);
+            foreach (var ingredient in selectedRecipe.ingredients)
+            {
+                var inventoryItem = items.playerInventory.Find(i => i.itemID == ingredient.item.itemID);
+                if (inventoryItem == null || inventoryItem.quantity < ingredient.quantity)
+                {
+                    canCraft = false;
+                    return;
                 }
             }
+
+            if (canCraft)
+            {
+                foreach (var ingredient in selectedRecipe.ingredients)
+                {
+                    if(ingredient.consumeItem)
+                    {
+                        var inventoryItem = items.playerInventory.Find(i => i.itemID == ingredient.item.itemID);
+                        items.RemoveItem(inventoryItem.itemNumberID, ingredient.quantity);
+                    }
+                }
+            }
+            items.AddItem(selectedRecipe.outputItem.itemNumber, 1);
         }
         else
         {
             Debug.Log("No recipe found!");
+            FindFirstObjectByType<InventorySlot>().DenyCraft();
+            return;
         }
     }
-
-    public void DisplayCraftingPreview(int itemNumberID)
-    {
-
-    }
-
 
 
 }

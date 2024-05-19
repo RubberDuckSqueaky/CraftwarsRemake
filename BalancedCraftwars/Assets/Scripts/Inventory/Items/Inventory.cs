@@ -6,10 +6,19 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static Recipe;
 using static SaveAllItems;
+using static UnityEditor.Progress;
 
 public class Inventory : MonoBehaviour
 {
+    [SerializeField] private GameObject craftingPreview;
+    [SerializeField] public TextMeshProUGUI itemName;
+    [SerializeField] public TextMeshProUGUI itemDescription;
+    [SerializeField] public TextMeshProUGUI itemRequirements;
+    [SerializeField] public Button equipButton;
+    [SerializeField] public Button unequipButton;
+
     public static Inventory Singleton;
     public static InventoryItem carriedItem;
     private SaveAllItems items;
@@ -36,6 +45,7 @@ public class Inventory : MonoBehaviour
         pageNumber = 1;
         slotCount = 0;
         filter = false;
+        UpdateInventory();
     }
 
     // keep an eye on this code below... :3
@@ -54,7 +64,7 @@ public class Inventory : MonoBehaviour
                 }
                 else
                 {
-                    string realName = items.GetName(items.playerInventory[slotNumber].itemID);
+                    string realName = items.GetName(items.playerInventory[slotNumber].itemID, 0);
                     int quantity = items.playerInventory[slotNumber].quantity;
                     slot.GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName + " x" + quantity : "";
                     slotNumber++;
@@ -147,9 +157,11 @@ public class Inventory : MonoBehaviour
         {
             if (i < items.playerInventory.Count)
             {
-                string realName = items.GetName(items.playerInventory[i].itemID);
+                string realName = items.GetName(items.playerInventory[i].itemID, 0);
                 int quantity = items.playerInventory[slotNumber].quantity;
                 inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName + " x" + quantity : "";
+                inventorySlots[slotNumber].GetComponent<InventorySlot>().itemID = items.playerInventory[i].itemID;
+                inventorySlots[slotNumber].item = items.GetItem(items.playerInventory[slotNumber].itemID, 2);
                 slotNumber++;
             }
         }
@@ -169,7 +181,7 @@ public class Inventory : MonoBehaviour
             filter = true;
             foreach (var item in items.playerInventory)
             {
-                if (items.GetName(item.itemID).ToLower().Contains(searchText.ToLower()))
+                if (items.GetName(item.itemID, 0).ToLower().Contains(searchText.ToLower()))
                 {
                     filteredInventory.Add(item);
                 }
@@ -189,7 +201,7 @@ public class Inventory : MonoBehaviour
         int slotNumber = 0;
         for (int i = 0; i < filteredInventory.Count && i < inventorySlots.Length; i++)
         {
-            string realName = items.GetName(filteredInventory[i].itemID);
+            string realName = items.GetName(filteredInventory[i].itemID, 0);
             int quantity = filteredInventory[i].quantity;
             inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName + " x" + quantity : "";
             slotNumber++;
@@ -205,4 +217,49 @@ public class Inventory : MonoBehaviour
         InputSystem.EnableDevice(Keyboard.current);
     }
 
+    public void EquipButton()
+    {
+        var inventoryItem = items.playerInventory.Find(i => i.itemID == FindFirstObjectByType<SaveAllItems>().selectedItem.itemID);
+
+        if(inventoryItem != null)
+        {
+            EquipItem(inventoryItem);
+        }
+    }
+
+    public void UnequipButton()
+    {
+        var inventoryItem = items.playerInventory.Find(i => i.itemID == FindFirstObjectByType<SaveAllItems>().selectedItem.itemID);
+
+        if (inventoryItem != null)
+        {
+            UnequipItem(inventoryItem);
+        }
+    }
+
+
+    private void EquipItem(ItemInfo item)
+    {
+        var inventoryItem = FindFirstObjectByType<SaveAllItems>().playerInventory.Find(i => i.itemID == item.itemID);
+        bool success = FindFirstObjectByType<SaveAllItems>().EquipItem(item);
+        itemRequirements.text = success ? $"{item.itemID} equipped successfully!" : $"Cannot equip {item.itemID}!";
+
+        if(inventoryItem != null && inventoryItem.isEquipped)
+        {
+            equipButton.gameObject.SetActive(false);
+            unequipButton.gameObject.SetActive(true);
+        }
+    }
+    private void UnequipItem(ItemInfo item)
+    {
+        var inventoryItem = FindFirstObjectByType<SaveAllItems>().playerInventory.Find(i => i.itemID == item.itemID);
+        bool success = FindFirstObjectByType<SaveAllItems>().UnequipItem(item);
+        itemRequirements.text = success ? $"{item.itemID} unequipped successfully!" : $"Cannot unequip {item.itemID}!";
+
+        if (inventoryItem != null && !inventoryItem.isEquipped)
+        {
+            equipButton.gameObject.SetActive(true);
+            unequipButton.gameObject.SetActive(false);
+        }
+    }
 }
