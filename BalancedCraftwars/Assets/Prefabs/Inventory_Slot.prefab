@@ -273,6 +273,8 @@ MonoBehaviour:
   hovered: 0
   heldItem: {fileID: 0}
   quantity: 0
+  itemID: 
+  item: {fileID: 0}
   recipe: {fileID: 0}
 --- !u!114 &5388611115301431521
 MonoBehaviour:

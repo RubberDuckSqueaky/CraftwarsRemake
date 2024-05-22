@@ -18,7 +18,7 @@ MonoBehaviour:
   stackable: 1
   itemNumber: 5
   quantity: 0
-  itemTag: 1
+  itemTag: 4
   inventoryTag: 0
   healthIncrease: 0
   healthMultiplier: 1

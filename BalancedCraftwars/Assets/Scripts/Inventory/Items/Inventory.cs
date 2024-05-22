@@ -161,7 +161,15 @@ public class Inventory : MonoBehaviour
                 int quantity = items.playerInventory[slotNumber].quantity;
                 inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().text = realName != null ? realName + " x" + quantity : "";
                 inventorySlots[slotNumber].GetComponent<InventorySlot>().itemID = items.playerInventory[i].itemID;
-                inventorySlots[slotNumber].item = items.GetItem(items.playerInventory[slotNumber].itemID, 2);
+                inventorySlots[slotNumber].item = items.GetItem(items.playerInventory[i].itemID, 2);
+                if (items.playerInventory[i].isEquipped)
+                {
+                    inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().color = Color.yellow;
+                }
+                else
+                {
+                    inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().color = Color.white;
+                }
                 slotNumber++;
             }
         }
@@ -242,6 +250,7 @@ public class Inventory : MonoBehaviour
     {
         var inventoryItem = FindFirstObjectByType<SaveAllItems>().playerInventory.Find(i => i.itemID == item.itemID);
         bool success = FindFirstObjectByType<SaveAllItems>().EquipItem(item);
+        FindFirstObjectByType<HotbarManager>().AssigntoHotbar(FindFirstObjectByType<SaveAllItems>().GetItem(inventoryItem.itemID, 0), inventoryItem.itemTag);
         itemRequirements.text = success ? $"{item.itemID} equipped successfully!" : $"Cannot equip {item.itemID}!";
 
         if(inventoryItem != null && inventoryItem.isEquipped)
@@ -254,6 +263,7 @@ public class Inventory : MonoBehaviour
     {
         var inventoryItem = FindFirstObjectByType<SaveAllItems>().playerInventory.Find(i => i.itemID == item.itemID);
         bool success = FindFirstObjectByType<SaveAllItems>().UnequipItem(item);
+        FindFirstObjectByType<HotbarManager>().UnassignfromHotbar(FindFirstObjectByType<SaveAllItems>().GetItem(inventoryItem.itemID, 0), inventoryItem.itemTag);
         itemRequirements.text = success ? $"{item.itemID} unequipped successfully!" : $"Cannot unequip {item.itemID}!";
 
         if (inventoryItem != null && !inventoryItem.isEquipped)

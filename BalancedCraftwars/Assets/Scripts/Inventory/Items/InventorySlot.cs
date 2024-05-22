@@ -10,7 +10,6 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     public InventoryItem myItem { get; set; }
     public SlotTag myTag;
     public bool hovered;
-    public Item heldItem;
     public int quantity;
 
     public string itemID = null;
