@@ -168,7 +168,18 @@ public class Inventory : MonoBehaviour
                 }
                 else
                 {
-                    inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().color = Color.white;
+                    switch(items.playerInventory[i].inventoryTag)
+                    {
+                        case InventoryTag.Rare:
+                            inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().color = Color.red;
+                            break;
+                        case InventoryTag.Debug:
+                            inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().color = Color.magenta;
+                            break;
+                        default:
+                            inventorySlots[slotNumber].GetComponentInChildren<TextMeshProUGUI>().color = Color.white;
+                            break;
+                    }
                 }
                 slotNumber++;
             }
@@ -207,6 +218,7 @@ public class Inventory : MonoBehaviour
         }
 
         int slotNumber = 0;
+        slotCount = 0;
         for (int i = 0; i < filteredInventory.Count && i < inventorySlots.Length; i++)
         {
             string realName = items.GetName(filteredInventory[i].itemID, 0);
@@ -249,6 +261,7 @@ public class Inventory : MonoBehaviour
     private void EquipItem(ItemInfo item)
     {
         var inventoryItem = FindFirstObjectByType<SaveAllItems>().playerInventory.Find(i => i.itemID == item.itemID);
+
         bool success = FindFirstObjectByType<SaveAllItems>().EquipItem(item);
         FindFirstObjectByType<HotbarManager>().AssigntoHotbar(FindFirstObjectByType<SaveAllItems>().GetItem(inventoryItem.itemID, 0), inventoryItem.itemTag);
         itemRequirements.text = success ? $"{item.itemID} equipped successfully!" : $"Cannot equip {item.itemID}!";
@@ -272,4 +285,5 @@ public class Inventory : MonoBehaviour
             unequipButton.gameObject.SetActive(false);
         }
     }
+
 }

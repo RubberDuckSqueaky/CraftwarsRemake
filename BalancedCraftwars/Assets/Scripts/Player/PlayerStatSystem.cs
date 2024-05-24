@@ -86,8 +86,6 @@ public class PlayerStatSystem : MonoBehaviour
         isAlive = true;
         Cursor.lockState = CursorLockMode.Locked;
         // deathCanvas.enabled = false;
-        Debug.Log("maxHealth = " + maxHealth);
-        Debug.Log("maxSheild = " + maxShield);
     }
     private void Update()
     {

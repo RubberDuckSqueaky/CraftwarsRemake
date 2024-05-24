@@ -125,7 +125,8 @@ public class SaveAllItems : MonoBehaviour
             itemID = item.itemID,
             itemNumberID = item.itemNumber,
             quantity = itemstoAdd,
-            itemTag = item.itemTag
+            itemTag = item.itemTag,
+            inventoryTag = item.inventoryTag
         };
 
         if (existingItem != null)

@@ -18,7 +18,7 @@ MonoBehaviour:
   stackable: 1
   itemNumber: 9
   quantity: 0
-  itemTag: 4
+  itemTag: 3
   inventoryTag: 0
   healthIncrease: 0
   healthMultiplier: 1
@@ -32,4 +32,4 @@ MonoBehaviour:
   speedMultiplier: 1
   currencyToAdd: 0
   currencyMultiplier: 1
-  itemToEquip: {fileID: 0}
+  itemToEquip: {fileID: 8059779053270831666, guid: 1ede73dbdc9f97b418da9ab4fb3fe0e1, type: 3}

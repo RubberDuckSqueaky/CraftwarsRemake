@@ -10,6 +10,8 @@ public class HotbarSlot : MonoBehaviour
     public SlotTag myTag;
     public string itemID = null;
     public Item item;
+    public GameObject itemtoEquip;
+    public bool equipped;
 
 
 
