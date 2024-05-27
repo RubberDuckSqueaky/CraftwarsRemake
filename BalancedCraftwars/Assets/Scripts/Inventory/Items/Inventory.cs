@@ -272,7 +272,7 @@ public class Inventory : MonoBehaviour
             unequipButton.gameObject.SetActive(true);
         }
     }
-    private void UnequipItem(ItemInfo item)
+    public void UnequipItem(ItemInfo item)
     {
         var inventoryItem = FindFirstObjectByType<SaveAllItems>().playerInventory.Find(i => i.itemID == item.itemID);
         bool success = FindFirstObjectByType<SaveAllItems>().UnequipItem(item);

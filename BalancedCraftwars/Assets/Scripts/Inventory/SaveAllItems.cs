@@ -33,6 +33,8 @@ public class SaveAllItems : MonoBehaviour
     };
     public Dictionary<SlotTag, int> equippedCounts = new Dictionary<SlotTag, int>();
 
+    private Inventory invReference;
+
     [Serializable]
     public class ItemInfo
     {
@@ -50,6 +52,7 @@ public class SaveAllItems : MonoBehaviour
         {
             equippedCounts[tag] = 0;
         }
+        invReference = FindFirstObjectByType<Inventory>();
     }
 
     private void Update()
@@ -68,7 +71,7 @@ public class SaveAllItems : MonoBehaviour
         {
             int randomItem = UnityEngine.Random.Range(0, items.Length);
 
-            RemoveItem(randomItem, 1);
+            RemoveItem(randomItem, 5);
         }
     }
 
@@ -147,6 +150,11 @@ public class SaveAllItems : MonoBehaviour
             existingItem.quantity -= itemstoRemove;
             if(existingItem.quantity <= 0)
             {
+                if(existingItem.isEquipped)
+                {
+                    invReference.UnequipItem(existingItem);
+                    UnequipItem(existingItem);
+                }
                 playerInventory.Remove(existingItem);
             }
         }

@@ -22,6 +22,23 @@ public class PlayerStatSystem : MonoBehaviour
     [SerializeField] private float playerRegenTick = 0.05f;
     [SerializeField] private int playerRegenDelay = 5;
 
+    [Header("Other Stats")]
+    [SerializeField] public float playerHealingModifier = 1.0f;
+    [SerializeField] public float playerHurtingModifier = 1.0f;
+    [SerializeField] public float playerDamageModifier = 1.0f;
+    [SerializeField] public float playerSpeedModifier = 1.0f;
+
+    [SerializeField] public float playerFirerateMultiplier = 1.0f;
+    [SerializeField] public float playerSwingSpeedMultiplier = 1.0f;
+    [SerializeField] public float playerCastingSpeedMultiplier = 1.0f;
+    [SerializeField] public float playerSummonSpeedMultiplier = 1.0f;
+
+    [SerializeField] public float playerDamageReduction = 0.0f;
+    [SerializeField] public int playerSpeed = 16;
+    [SerializeField] public int playerJump = 5;
+    [SerializeField] public int playerArmor = 0;
+    [SerializeField] public int playerLuck = 0;
+
     // [Header("Death Settings")]
     // [SerializeField] private Canvas deathCanvas;
 

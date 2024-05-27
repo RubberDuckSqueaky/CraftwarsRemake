@@ -41,7 +41,6 @@ public class UIManager : MonoBehaviour
         {
             inventoryCanvas.enabled = true;
             craftingCanvas.enabled = false;
-            inventoryMenu.UpdateInventory();
         }
     }
 

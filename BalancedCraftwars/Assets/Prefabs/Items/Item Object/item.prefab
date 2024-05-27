@@ -101,7 +101,11 @@ MonoBehaviour:
   firepoint: {fileID: 9170709969680283720}
   raycastEnabled: 1
   bulletSpeed: 55
+  firerate: 0.1
   bulletCount: 1
+  abilities:
+  - {fileID: 11400000, guid: 2fb150490f0957743a4a06afa700ac1a, type: 2}
+  weaponID: gunTest
 --- !u!1 &9170709969680283720
 GameObject:
   m_ObjectHideFlags: 0

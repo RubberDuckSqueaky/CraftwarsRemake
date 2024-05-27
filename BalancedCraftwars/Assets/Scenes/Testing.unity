@@ -15389,6 +15389,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       insertIndex: -1
       addedObject: {fileID: 109647694881815725}
+    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 109647694881815732}
     - targetCorrespondingSourceObject: {fileID: 8187455079231382173, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2068745636}
@@ -15461,6 +15464,19 @@ MonoBehaviour:
   parent: {fileID: 125822150}
   handAnchor01: {fileID: 75761005}
   handAnchor02: {fileID: 0}
+--- !u!114 &109647694881815732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125822150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89654683d87d8a34ead8fcda0d7b7fc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldownList: []
 --- !u!1001 &109647695387886677
 PrefabInstance:
   m_ObjectHideFlags: 0

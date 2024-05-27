@@ -45,7 +45,6 @@ public class HotbarManager : MonoBehaviour
         item.transform.parent = equipment.handAnchor01.transform;
         item.transform.position = equipment.handAnchor01.transform.position;
     }
-
     public void AssigntoHotbar(Item selected, SlotTag tag)
     {
         foreach (var slot in hotbarSlots)
