@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using StarterAssets;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,67 +11,42 @@ using UnityEngine.UI;
 public class PlayerStatSystem : MonoBehaviour
 {
     [Header("Player UI Settings")]
-    [SerializeField] Slider healthSlider;
-    [SerializeField] Slider shieldSlider;
-    [SerializeField] public bool healthActive = true;
-    [SerializeField] public bool shieldActive = false;
+    [SerializeField] public Slider defaultHealthSlider;
+    [SerializeField] public Slider sharedHealthSlider;
+    [SerializeField] public TextMeshProUGUI defaultHealthText;
+    [SerializeField] public TextMeshProUGUI sharedHealthText;
 
     [Header("Player Health Settings")]
+    [SerializeField] public bool healthActive = true;
     [Min(0), SerializeField] public float playerHealth = 100;
     [SerializeField] private float playerRegenTick = 0.05f;
     [SerializeField] private int playerRegenDelay = 5;
-
-    [Header("Player Shield Settings")]
-    [Min(0), SerializeField] public float playerShield = 100;
-    [SerializeField] private float playerShieldRegenTick = 0.05f;
-    [SerializeField] private int playerShieldRegenDelay = 5;
 
     // [Header("Death Settings")]
     // [SerializeField] private Canvas deathCanvas;
 
     private float maxHealth;
-    private float maxShield;
+    private PlayerShieldSystem shieldSystem;
 
     public float playerMoveSpeed;
     public float playerSprintSpeed;
     public float playerJumpSpeed;
 
     public bool isAlive = true;
-    private bool shieldRegen = false;
+    private bool regentookDamage = false;
     private bool regenActive = false;
     private float defaultMoveSpeed;
     public float defaultSprintSpeed;
     public float defaultJumpSpeed;
     private void Awake()
     {
+        shieldSystem = GetComponent<PlayerShieldSystem>();
+
         // UI
         maxHealth = playerHealth;
-        maxShield = playerShield;
-
-        if (maxShield <= 0 || !shieldActive)
-        {
-            shieldSlider.gameObject.SetActive(false);
-        }
-        else if (maxShield > 0 || shieldActive)
-        {
-            shieldSlider.gameObject.SetActive(true);
-            shieldSlider.maxValue = maxShield;
-            shieldSlider.value = playerShield;
-        }
-
-        if (maxHealth <= 0 || !healthActive)
-        {
-            healthSlider.gameObject.SetActive(false);
-        }
-        else if (maxHealth > 0 || healthActive)
-        {
-            healthSlider.gameObject.SetActive(true);
-            healthSlider.maxValue = maxShield;
-            healthSlider.value = playerShield;
-        }
-
-        healthSlider.maxValue = maxHealth;
-        healthSlider.value = playerHealth;
+        sharedHealthSlider.gameObject.SetActive(true);
+        sharedHealthSlider.maxValue = maxHealth;
+        sharedHealthSlider.value = playerHealth;
         // UI end
 
         // stat values
@@ -91,27 +67,22 @@ public class PlayerStatSystem : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.F))
         {
-            PlayerTakeDamage(5);
+            PlayerTakeDamage(5, 0);
         }
-        healthSlider.value = playerHealth;
-
-        if (playerShield <= 0)
+        if (Input.GetKeyDown(KeyCode.M))
         {
-            shieldSlider.gameObject.SetActive(false);
+            PlayerTakeDamage(5, 1);
         }
-        else if (maxShield > 0 || shieldActive)
-        {
-            shieldSlider.gameObject.SetActive(true);
-            shieldSlider.maxValue = maxShield;
-            shieldSlider.value = playerShield;
-        }
+        defaultHealthSlider.value = playerHealth;
+        sharedHealthSlider.value = playerHealth;
+        defaultHealthText.text = playerHealth.ToString() + "/" + maxHealth;
+        sharedHealthText.text = playerHealth.ToString() + "/" + maxHealth;
 
         PlayerHealthRegen();
-        PlayerShieldRegen();
         HealthFix();
     }
     #region External Functionality
-    #region Health & Shield Functions
+    #region Health Functions
     public void PlayerHeal(float health)
     {
         if (!isAlive || playerHealth == maxHealth) { return; }
@@ -119,15 +90,6 @@ public class PlayerStatSystem : MonoBehaviour
         if (playerHealth > maxHealth)
         {
             playerHealth = maxHealth;
-        }
-    }
-    public void ShieldHeal(float health)
-    {
-        if (!isAlive || playerShield == maxShield) { return; }
-        playerShield += health;
-        if (playerShield > maxShield)
-        {
-            playerShield = maxShield;
         }
     }
     public void SetMaxHealth(float newMaxHealth)
@@ -139,15 +101,6 @@ public class PlayerStatSystem : MonoBehaviour
             playerHealth = maxHealth;
         }
     }
-    public void SetMaxShield(float newMaxShield)
-    {
-        if (!isAlive || !shieldActive) { return; }
-        maxShield = newMaxShield;
-        if (playerShield > maxShield)
-        {
-            playerShield = maxShield;
-        }
-    }
     #endregion
     #region Speed Functions
     public void SetSpeed(float speed)
@@ -157,29 +110,51 @@ public class PlayerStatSystem : MonoBehaviour
         playerSprintSpeed = speed * 1.5f;
     }
     #endregion
-    public void PlayerTakeDamage(float damage)
+    public void PlayerTakeDamage(float damage, int damageType)
     {
         if (!isAlive) { return; }
-        if (playerShield > 0)
+
+        switch(damageType)
         {
-            float damagetoSubtract = playerShield;
-            playerShield -= damage;
-            damage -= damagetoSubtract;
-            shieldRegen = false;
-            if (damage > 0)
-            {
+            // normal damage
+            case 0:
+                if (shieldSystem.playerShield > 0)
+                {
+                    float damagetoSubtract = shieldSystem.playerShield;
+                    shieldSystem.playerShield -= damage;
+                    damage -= damagetoSubtract;
+                    shieldSystem.shieldRegen = false;
+                    if (damage > 0)
+                    {
+                        playerHealth -= damage;
+                        regenActive = false;
+                    }
+                }
+                else
+                {
+                    playerHealth -= damage;
+                    regenActive = false;
+                    shieldSystem.tookDamage = true;
+                    regentookDamage = true;
+                }
+                if (playerHealth <= 0)
+                {
+                    Debug.Log("died");
+                }
+                return;
+            // shield bypassing damage
+            case 1:
                 playerHealth -= damage;
                 regenActive = false;
-            }
-        }
-        else
-        {
-            playerHealth -= damage;
-            regenActive = false;
-        }
-        if (playerHealth <= 0)
-        {
-            Debug.Log("died");
+                regentookDamage = true;
+                if (playerHealth <= 0)
+                {
+                    Debug.Log("died");
+                }
+                return;
+            default:
+                Debug.Log("Not a valid type of damage!");
+                return;
         }
     }
     #endregion
@@ -191,21 +166,11 @@ public class PlayerStatSystem : MonoBehaviour
 
         StartCoroutine(Regen());
     }
-    private void PlayerShieldRegen()
-    {
-        if (!isAlive || playerShield >= maxShield || !shieldActive) { return; }
-
-        StartCoroutine(ShieldRegen());
-    }
     private void HealthFix()
     {
         if (playerHealth < 0)
         {
             playerHealth = 0;
-        }
-        if (playerShield < 0)
-        {
-            playerShield = 0;
         }
         if (playerHealth > maxHealth)
         {
@@ -214,6 +179,12 @@ public class PlayerStatSystem : MonoBehaviour
     }
     private IEnumerator Regen()
     {
+        if(regentookDamage)
+        {
+            regenActive = false;
+            regentookDamage = false;
+            StopAllCoroutines();
+        }
         if (!regenActive)
         {
             yield return new WaitForSeconds(playerRegenDelay);
@@ -222,18 +193,6 @@ public class PlayerStatSystem : MonoBehaviour
 
         yield return new WaitForSeconds(playerRegenTick);
         playerHealth++;
-        StopAllCoroutines();
-    }
-    private IEnumerator ShieldRegen()
-    {
-        if (!shieldRegen)
-        {
-            yield return new WaitForSeconds(playerShieldRegenDelay);
-            shieldRegen = true;
-        }
-
-        yield return new WaitForSeconds(playerShieldRegenTick);
-        playerShield++;
         StopAllCoroutines();
     }
     #endregion
